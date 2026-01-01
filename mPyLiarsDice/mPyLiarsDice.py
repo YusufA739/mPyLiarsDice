@@ -453,15 +453,14 @@ def cpugame(allPlayerHands, dieInHands, players, currentAction, nextAction, cpuM
                 else:
                     print("No action taken, Player ", names[nextAction], " continues")
                     time.sleep(1)
-                    print("Last Bet was " + str(
-                        currentBet) + ". You must bet higher than this next round, by frequency or face or both")
+                    print("Last Bet was " + str(currentBet) + ". You must bet higher than this next round, by frequency or face or both")
                     blinkLED(255,255,255)
             else:  # CPU's turn
                 bluffCall = ""
 
                 fakePlayerHands = []
                 faceFrequency = [[],[],[],[],[],[]]
-                for carrier in range(allPlayerHands[currentAction]-1):
+                for carrier in range(len(allPlayerHands[currentAction])-1):
                     face = random.randint(1,6)
                     fakePlayerHands.append(face)
                     faceFrequency[face - 1] = faceFrequency[face - 1] + 1

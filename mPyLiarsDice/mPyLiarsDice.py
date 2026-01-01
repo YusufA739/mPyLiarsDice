@@ -163,11 +163,9 @@ def game(allPlayerHands, dieInHands, players, currentAction, nextAction, cpuMode
                     currentBet = int(str(diceFace) + str(minCount))
 
                     totalDiceCount = sum(dieInHands)
-                    if currentBet > lastBet and minCount <= totalDiceCount and minCount >= 1 and diceFace <= 6 and diceFace >= 1:
+                    if (diceFace > lastFace or (diceFace == lastFace and minCount > lastCount)) and (minCount <= totalDiceCount and minCount >= 1 and diceFace <= 6 and diceFace >= 1):
                         break
                     else:
-                        if not currentBet > lastBet:
-                            print("Bet is less than last bet.\nYour bet:", currentBet, "    Last bet:", lastBet)
                         if diceFace > 6 or diceFace < 1:
                             print("Face chosen is not 1 to 6")
                         if minCount <= lastCount:
@@ -263,10 +261,10 @@ def game(allPlayerHands, dieInHands, players, currentAction, nextAction, cpuMode
             else:
                 print("No action taken, Player " + names[nextAction] + " continues")
                 time.sleep(1)
-                print("Last Bet was " + str(
-                    currentBet) + ". You must bet higher than this next round, by frequency or face or both")
+                print("Last Bet was " + str(diceFace) + "x" + str(minCount) + ". You must bet higher than this next round, by frequency or face or both")
                 time.sleep(1)
-        time.sleep(4)
+
+
         input("Press Enter to continue...")
 
 
@@ -338,11 +336,9 @@ def cpugame(allPlayerHands, dieInHands, players, currentAction, nextAction, cpuM
                         minCount = int(input("How much?"))
                         currentBet = int(str(diceFace) + str(minCount))
 
-                        if currentBet > lastBet and minCount <= totalDiceCount and minCount >= 1 and diceFace <= 6 and diceFace >= 1:
+                        if (diceFace > lastFace or (diceFace == lastFace and minCount > lastCount)) and (minCount <= totalDiceCount and minCount >= 1 and diceFace <= 6 and diceFace >= 1):
                             break
                         else:
-                            if not currentBet > lastBet:
-                                print("Bet is less than last bet.\nYour bet:", currentBet, "    Last bet:", lastBet)
                             if diceFace > 6 or diceFace < 1:
                                 print("Face chosen is not 1 to 6")
                             if minCount <= lastCount:
@@ -361,7 +357,7 @@ def cpugame(allPlayerHands, dieInHands, players, currentAction, nextAction, cpuM
                     currentBet, diceFace, minCount = cpuBet(allPlayerHands, currentAction, lastBet, lastFace, lastCount, currentBet, diceFace, minCount, easyChance, medChance, hardChance)
 
                     #game checking if bet is valid - it is NOT part of the CPU's betting system (FINAL CHECK, similar to player betting)
-                    if currentBet <= lastBet:
+                    if (diceFace > lastFace or (diceFace == lastFace and minCount > lastCount)) and (minCount <= totalDiceCount and minCount >= 1 and diceFace <= 6 and diceFace >= 1):
                         print("Robot has done an invalid bet. Please wait...")
                         print("REPORT THIS IF YOU NOTICE WITH SCREENSHOT")
                         time.sleep(2)
@@ -463,6 +459,26 @@ def cpugame(allPlayerHands, dieInHands, players, currentAction, nextAction, cpuM
             else:  # CPU's turn
                 bluffCall = ""
 
+                fakePlayerHands = []
+                faceFrequency = [[],[],[],[],[],[]]
+                for carrier in range(allPlayerHands[currentAction]-1):
+                    face = random.randint(1,6)
+                    fakePlayerHands.append(face)
+                    faceFrequency[face - 1] = faceFrequency[face - 1] + 1
+                fakePlayerHands.append(diceFace)
+
+                for carrier in allPlayerHands[nextAction]:
+                    faceFrequency[carrier-1] = faceFrequency[carrier-1] + 1
+
+                if faceFrequency[diceFace] > minCount:
+                    bluffCall = "b"
+                elif faceFrequency[diceFace] < minCount:
+                    bluffCall = "c"
+                else:
+                    bluffCall = "s"
+
+
+
                 if bluffCall.lower() == "y" or bluffCall.lower() == "b":
                     print("Player", names[nextAction], " calls bluff on Player ", names[currentAction])
                     time.sleep(1)
@@ -548,10 +564,9 @@ def cpugame(allPlayerHands, dieInHands, players, currentAction, nextAction, cpuM
                 else:
                     print("No action taken, Player ", names[nextAction], " continues")
                     time.sleep(1)
-                    print("Last Bet was " + str(
-                        currentBet) + ". You must bet higher than this next round, by frequency or face or both")
+                    print("Last Bet was " + str(diceFace) + "x" + str(minCount) + ". You must bet higher than this next round, by frequency or face or both")
                     blinkLED(255,255,255)
-            time.sleep(4)
+
             input("Press Enter to continue...")
 
 
@@ -788,8 +803,16 @@ def cpuBet(allPlayerHands, currentAction, lastBet, lastFace, lastCount, currentB
 
 
     # bet builder and final checks
+    if diceFace > 6 or diceFace < 1:
+        diceFace = 6
+        minCount = countOfFaces[diceFace - 1]
+    if minCount <= lastCount:
+        minCount = lastCount + 1
+
     currentBet = int(str(diceFace) + str(minCount))
-    if currentBet <= lastBet:
+    totalDiceCount = len(allPlayerHands)
+
+    if (diceFace > lastFace or (diceFace == lastFace and minCount > lastCount)) and (minCount <= totalDiceCount and minCount >= 1 and diceFace <= 6 and diceFace >= 1):
         currentBet = lastBet + random.randint(1, 2)
     else:# bet is valid
         pass

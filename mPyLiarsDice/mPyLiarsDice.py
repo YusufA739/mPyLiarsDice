@@ -1,71 +1,64 @@
-import random,time,os
-
-if os.environ.get('GITHUB_ACTIONS'):
-    import sys
-    sys.path.append('..')
-    from mPyLiarsDice.mPyLiarsDice.neopixel import Neopixel
-else:
-    from neopixel import Neopixel
-
-# import math #removed due to not being used at all in game (basic operations for maths needed so far)
-global pixel  # call the global version of pixel in use here
-pixel = Neopixel(1, 0, 23, "RGB")  # Neopixel object 'pixel'
-pixel.brightness(127)  # max brightness
+import random, time
+from neopixel import Neopixel
+#import math #removed due to not being used at all in game (basic operations for maths needed so far)
+global pixel#call the global version of pixel in use here
+pixel = Neopixel(1,0,23,"GRB")#Neopixel object 'pixel'
+pixel.brightness(127)#max brightness
 global runtimeLEDState
-runtimeLEDState = 0
+runtimeLEDState= 0
 
 
-# LD.txt is used to track state of LED
+#LD.txt is used to track state of LED
 def createFile(name=str(None)):
     if name == None:
-        name = str(random.randint(0, 10000000))
-    createdFile = open(name + ".txt", "a").close()
+        name = str(random.randint(0,10000000))
+    createdFile = open(name+".txt","a").close()
 
 
 def reloadFile(name=str(None)):
     if name == None:
-        name = str(random.randint(0, 10000000))
-    readingFile = open(name + ".txt", "r")
+        name = str(random.randint(0,10000000))
+    readingFile = open(name+".txt","r")
     data = readingFile.readline()
     readingFile.close()
     updateLED(data)
     return data
 
 
-def writeFile(name=str(None), data=str(None)):
+def writeFile(name=str(None),data=str(None)):
     if name == None:
-        name = str(random.randint(0, 10000000))
+        name = str(random.randint(0,10000000))
     if data == None:
-        data = str(random.randint(0, 10000000))
-    writtenFile = open(name + ".txt", "w")
+        data = str(random.randint(0,10000000))
+    writtenFile = open(name+".txt","w")
     writtenFile.write(data)
     writtenFile.flush()
     writtenFile.close()
-    # update LED state to match data saved in file
+    #update LED state to match data saved in file
     updateLED(data)
 
 
-def reloadLED(r, g, b):
+def reloadLED(r,g,b):
     global pixel
-    pixel.set_pixel(0, (r, g, b))
+    pixel.set_pixel(0,(r,g,b))
     pixel.show()
 
 
 def updateLED(data=str(None)):
-    if data == "2":  # win number
-        reloadLED(0, 255, 0)
-    if data == "1":  # lose cond
-        reloadLED(255, 0, 0)
-    if data == "0":  # quitter/in-progress
-        reloadLED(255, 255, 0)
+    if data == "2":#win number
+        reloadLED(0,255,0)
+    if data == "1":#lose cond
+        reloadLED(255,0,0)
+    if data == "0":#quitter/in-progress
+        reloadLED(255,255,0)
 
 
-def blinkLED(r, g, b):
+def blinkLED(r,g,b):
     global runtimeLEDState
     for carrier in range(15):
-        reloadLED(r, g, b)
+        reloadLED(r,g,b)
         time.sleep(0.1)
-        reloadLED(0, 0, 0)
+        reloadLED(0,0,0)
         time.sleep(0.1)
     updateLED(runtimeLEDState)
 
@@ -75,6 +68,7 @@ def setup():
     allPlayerHands = []
     cpuMode = False
 
+    
     try:
         players = int(input("How many players?"))
         if players <= 1:
@@ -83,7 +77,7 @@ def setup():
             easyChance, medChance, hardChance = difficultySelect()
             easyChance, medChance, hardChance = normaliseChanceValues(easyChance, medChance, hardChance)
         else:
-            easyChance, medChance, hardChance = 1, 0, 0
+            easyChance, medChance, hardChance = 1,0,0
 
         for placeholder in range(players):
             dieInHands.append(5)
@@ -101,8 +95,7 @@ def setup():
         nextAction = currentAction + 1
 
         if cpuMode:
-            cpugame(allPlayerHands, dieInHands, players, currentAction, nextAction, cpuMode, easyChance, medChance,
-                    hardChance)  # give initial conditions to gameloop
+            cpugame(allPlayerHands, dieInHands, players, currentAction, nextAction, cpuMode, easyChance, medChance, hardChance)  # give initial conditions to gameloop
         else:
             game(allPlayerHands, dieInHands, players, currentAction, nextAction,
                  cpuMode)  # give initial conditions to gameloop
@@ -137,7 +130,7 @@ def game(allPlayerHands, dieInHands, players, currentAction, nextAction, cpuMode
 
             if actionTaken:
                 allPlayerHands = generateHands(dieInHands)
-                lastBet = 10  # reset here for centralised resetting
+                lastBet = 10#reset here for centralised resetting
                 lastFace = 1
                 lastCount = 0
                 actionTaken = False
@@ -154,7 +147,7 @@ def game(allPlayerHands, dieInHands, players, currentAction, nextAction, cpuMode
                     lastCount = minCount
                 actionTaken = False  # reset flag for next round(not needed)
 
-            # Clear the console for a fresh view
+              # Clear the console for a fresh view
             print("Player " + names[currentAction] + "'s turn")
             print("Your dice:", allPlayerHands[currentAction])
             dieCountFormatted = "\n"
@@ -184,14 +177,14 @@ def game(allPlayerHands, dieInHands, players, currentAction, nextAction, cpuMode
                 except ValueError:
                     print("Invalid input. Integers only for face and count.")
 
+            
             print("Player " + names[nextAction] + "'s turn")
             print("Your dice:", allPlayerHands[nextAction])
 
             print("\nPlayer " + names[currentAction] + "'s bet:\n")
             print(dicegraphics(diceFace, minCount))
 
-            bluffCall = input("(b)bluff\n(s)spot on\n(c)continue\nWhat do you want to call, Player " + names[
-                nextAction] + "?(b/s/c):")
+            bluffCall = input("(b)bluff\n(s)spot on\n(c)continue\nWhat do you want to call, Player " + names[nextAction] + "?(b/s/c):")
             if bluffCall.lower() == "y" or bluffCall.lower() == "b":
 
                 actionTaken = True
@@ -290,7 +283,7 @@ def cpugame(allPlayerHands, dieInHands, players, currentAction, nextAction, cpuM
     # easyChance, medChance, hardChance were here
 
     while validGame:  # main game while loop
-        writeFile("ledState", "0")
+        writeFile("ledState","0")
 
         # if only 1 player remains... CROWN HIM WINNER!!!
         if players <= 1:
@@ -298,10 +291,10 @@ def cpugame(allPlayerHands, dieInHands, players, currentAction, nextAction, cpuM
             print("Game Over")
             print("Player " + names[0] + " wins!")
             if names[0] == "T-800":
-                writeFile("ledState", "2")
+                writeFile("ledState","2")
             else:
-                writeFile("ledState", "1")
-
+                writeFile("ledState","1")
+            
         else:  # else, we should start by generating the action numbers
             temp = currentAction
             currentAction = nextAction
@@ -309,7 +302,7 @@ def cpugame(allPlayerHands, dieInHands, players, currentAction, nextAction, cpuM
 
             if actionTaken:
                 allPlayerHands = generateHands(dieInHands)
-                lastBet = 10  # reset here for centralised resetting
+                lastBet = 10#reset here for centralised resetting
                 lastFace = 1
                 lastCount = 0
                 actionTaken = False
@@ -326,7 +319,7 @@ def cpugame(allPlayerHands, dieInHands, players, currentAction, nextAction, cpuM
                     lastCount = minCount
                 actionTaken = False  # reset flag for next round(not needed)
 
-            # Clear the console for a fresh view
+              # Clear the console for a fresh view
             # print(currentAction)debug due to old actioning code left in and causing bad behaviour (fixed)
             print("Player " + names[currentAction] + "'s turn")
             print("Your dice:", allPlayerHands[currentAction])
@@ -363,11 +356,9 @@ def cpugame(allPlayerHands, dieInHands, players, currentAction, nextAction, cpuM
                     minCount = 0
                     currentBet = 0
 
-                    currentBet, diceFace, minCount = cpuBet(allPlayerHands, currentAction, lastBet, lastFace, lastCount,
-                                                            currentBet, diceFace, minCount, easyChance, medChance,
-                                                            hardChance)
+                    currentBet, diceFace, minCount = cpuBet(allPlayerHands, currentAction, lastBet, lastFace, lastCount, currentBet, diceFace, minCount, easyChance, medChance, hardChance)
 
-                    # game checking if bet is valid - it is NOT part of the CPU's betting system (FINAL CHECK, similar to player betting)
+                    #game checking if bet is valid - it is NOT part of the CPU's betting system (FINAL CHECK, similar to player betting)
                     if currentBet <= lastBet:
                         print("Robot has done an invalid bet. Please wait...")
                         print("REPORT THIS IF YOU NOTICE WITH SCREENSHOT")
@@ -375,6 +366,7 @@ def cpugame(allPlayerHands, dieInHands, players, currentAction, nextAction, cpuM
                     else:
                         break
 
+            
             if nextAction == 0:  # Player's turn
                 print("Player " + names[nextAction] + "'s turn")
                 print("Your dice:", allPlayerHands[nextAction])
@@ -382,8 +374,7 @@ def cpugame(allPlayerHands, dieInHands, players, currentAction, nextAction, cpuM
                 print("\nPlayer " + names[currentAction] + "'s bet:\n")
                 print(dicegraphics(diceFace, minCount))
 
-                bluffCall = input("(b)bluff\n(s)spot on\n(c)continue\n What do you want to do, Player " + names[
-                    nextAction] + "?(b/s/c):")
+                bluffCall = input("(b)bluff\n(s)spot on\n(c)continue\n What do you want to do, Player " + names[nextAction] + "?(b/s/c):")
                 if bluffCall.lower() == "y" or bluffCall.lower() == "b":
 
                     actionTaken = True
@@ -403,26 +394,24 @@ def cpugame(allPlayerHands, dieInHands, players, currentAction, nextAction, cpuM
                         dieInHands[nextAction] = dieInHands[nextAction] - 1
                         if dieInHands[nextAction] == 0:
                             lastEject = "next"
-                            allPlayerHands, dieInHands, names = removePlayer(allPlayerHands, dieInHands, names,
-                                                                             nextAction)
+                            allPlayerHands, dieInHands, names = removePlayer(allPlayerHands, dieInHands, names, nextAction)
                             players -= 1
 
                         print(allPlayerHands)
                         print(dieInHands)
-                        blinkLED(255, 0, 0)
+                        blinkLED(255,0,0)
                     else:
                         print("Invalid bet from Player", names[currentAction], "so Player", names[nextAction],
                               "wins a dice for a correct bluff call")
                         dieInHands[currentAction] = dieInHands[currentAction] - 1
                         if dieInHands[currentAction] == 0:
                             lastEject = "current"
-                            allPlayerHands, dieInHands, names = removePlayer(allPlayerHands, dieInHands, names,
-                                                                             currentAction)
+                            allPlayerHands, dieInHands, names = removePlayer(allPlayerHands, dieInHands, names, currentAction)
                             players -= 1
 
                         print(allPlayerHands)
                         print(dieInHands)
-                        blinkLED(0, 255, 0)
+                        blinkLED(0,255,0)
                 elif bluffCall.lower() == "s":
                     print("Player", names[nextAction], "calls spot on, on Player", names[currentAction])
                     time.sleep(1)
@@ -443,26 +432,24 @@ def cpugame(allPlayerHands, dieInHands, players, currentAction, nextAction, cpuM
                         dieInHands[nextAction] = dieInHands[nextAction] - 1
                         if dieInHands[nextAction] == 0:
                             lastEject = "next"
-                            allPlayerHands, dieInHands, names = removePlayer(allPlayerHands, dieInHands, names,
-                                                                             nextAction)
+                            allPlayerHands, dieInHands, names = removePlayer(allPlayerHands, dieInHands, names, nextAction)
                             players -= 1
 
                         print(allPlayerHands)
                         print(dieInHands)
-                        blinkLED(255, 0, 0)
+                        blinkLED(255,0,0)
                     else:
                         print("Bet from Player", names[currentAction], "was exact, so Player", names[nextAction],
                               "wins a dice for a correct spot on call")
                         dieInHands[currentAction] = dieInHands[currentAction] - 1
                         if dieInHands[currentAction] == 0:
                             lastEject = "current"
-                            allPlayerHands, dieInHands, names = removePlayer(allPlayerHands, dieInHands, names,
-                                                                             currentAction)
+                            allPlayerHands, dieInHands, names = removePlayer(allPlayerHands, dieInHands, names, currentAction)
                             players -= 1
 
                         print(allPlayerHands)
                         print(dieInHands)
-                        blinkLED(0, 255, 0)
+                        blinkLED(0,255,0)
 
 
                 else:
@@ -470,15 +457,14 @@ def cpugame(allPlayerHands, dieInHands, players, currentAction, nextAction, cpuM
                     time.sleep(1)
                     print("Last Bet was " + str(
                         currentBet) + ". You must bet higher than this next round, by frequency or face or both")
-                    blinkLED(255, 255, 255)
+                    blinkLED(255,255,255)
             else:  # CPU's turn
                 # check if player even has enough dice for bet
                 # cpuCount = minCount - sum(1 for die in allPlayerHands[nextAction] for dice in die if dice == diceFace)
                 cpuCount = minCount - allPlayerHands[nextAction].count(diceFace)
                 if cpuCount <= 1:  # player got min number correct or player has once dice of that face as well as cpu having all of that face (can code in a 50/50 bluff when cpuCount == 1)
                     bluffCall = "n"
-                elif cpuCount / len(allPlayerHands[
-                                        currentAction]) >= 0.5 and cpuCount > 1:  # if player has >=60% of the dice, call bluff
+                elif cpuCount / len(allPlayerHands[currentAction]) >= 0.5 and cpuCount > 1:  # if player has >=60% of the dice, call bluff
                     bluffCall = "b"
                 else:
                     bluffCall = "n"
@@ -509,7 +495,7 @@ def cpugame(allPlayerHands, dieInHands, players, currentAction, nextAction, cpuM
 
                         print(allPlayerHands)
                         print(dieInHands)
-                        blinkLED(255, 0, 0)
+                        blinkLED(0,255,0)
                     else:
                         print("Invalid bet from Player", names[currentAction], "so Player", names[nextAction],
                               "wins a dice for a correct bluff call")
@@ -522,7 +508,7 @@ def cpugame(allPlayerHands, dieInHands, players, currentAction, nextAction, cpuM
 
                         print(allPlayerHands)
                         print(dieInHands)
-                        blinkLED(0, 255, 0)
+                        blinkLED(255,0,0)
                 elif bluffCall.lower() == "s":
                     print("Player", names[nextAction], "calls spot on, on Player", names[currentAction])
                     time.sleep(1)
@@ -549,7 +535,7 @@ def cpugame(allPlayerHands, dieInHands, players, currentAction, nextAction, cpuM
 
                         print(allPlayerHands)
                         print(dieInHands)
-                        blinkLED(255, 0, 0)
+                        blinkLED(0,255,0)
                     else:
                         print("Bet from Player", names[currentAction], "was exact, so Player", names[nextAction],
                               "wins a dice for a correct spot on call")
@@ -562,7 +548,7 @@ def cpugame(allPlayerHands, dieInHands, players, currentAction, nextAction, cpuM
 
                         print(allPlayerHands)
                         print(dieInHands)
-                        blinkLED(0, 255, 0)
+                        blinkLED(255,0,0)
 
 
                 else:
@@ -570,7 +556,7 @@ def cpugame(allPlayerHands, dieInHands, players, currentAction, nextAction, cpuM
                     time.sleep(1)
                     print("Last Bet was " + str(
                         currentBet) + ". You must bet higher than this next round, by frequency or face or both")
-                    blinkLED(255, 255, 255)
+                    blinkLED(255,255,255)
             time.sleep(4)
 
 
@@ -743,9 +729,8 @@ def selectPlayers(players, current, nextaction, lasteject):
     return current, nextaction
 
 
-def cpuBet(allPlayerHands, currentAction, lastBet, lastFace, lastCount, currentBet, diceFace, minCount, easyChance,
-           medChance, hardChance):
-    # added hardening/checks against some errors (which technically should never occur, as the values are normalised before the game loop runs. They are never modified within game loop)
+def cpuBet(allPlayerHands, currentAction, lastBet, lastFace, lastCount, currentBet, diceFace, minCount, easyChance, medChance, hardChance):
+    #added hardening/checks against some errors (which technically should never occur, as the values are normalised before the game loop runs. They are never modified within game loop)
     if (easyChance + medChance + hardChance) != 1:
         easyChance, medChance, hardChance = normaliseChanceValues(easyChance, medChance, hardChance)
     else:
@@ -772,7 +757,7 @@ def cpuBet(allPlayerHands, currentAction, lastBet, lastFace, lastCount, currentB
                     minCount = lastCount + 1  # easiest way to meet threshold (this is easymode betting after all)
                 break  # to make it easy, just break now
 
-        if diceFace < lastFace:  # if no suitable face was found
+        if diceFace < lastFace:#if no suitable face was found
             diceFace = facesPresent[random.randint(0, len(facesPresent) - 1)]
             minCount = countOfFaces[diceFace]
             if minCount <= lastCount:
@@ -803,20 +788,22 @@ def cpuBet(allPlayerHands, currentAction, lastBet, lastFace, lastCount, currentB
         else:
             minCount = countOfFaces[diceFace - 1] + random.randint(0, 2)
             if minCount <= lastCount:
-                minCount = lastCount + 1  # bluff as bet is too high for us to accurately call so just add one onto the bet
+                minCount = lastCount + 1#bluff as bet is too high for us to accurately call so just add one onto the bet
+
+
 
     # bet builder and final checks
     currentBet = int(str(diceFace) + str(minCount))
     if currentBet <= lastBet:
         currentBet = lastBet + random.randint(1, 2)
-    else:  # bet is valid
+    else:# bet is valid
         pass
 
     return currentBet, diceFace, minCount
 
 
 def difficultySelect():
-    answer = 0  # default answer to difficulty (was string but microcontrollers don't like this (was running in pico for fun))
+    answer = 0#default answer to difficulty (was string but microcontrollers don't like this (was running in pico for fun))
     try:
         answer = int(input(
             "CPU Difficulty?\n(0) Crybaby Mode :,-(  (Easy Mode)\n(1) What's the controls again? |:-/  (Normal Mode)\n(2) Bring it on! >:-D  (Hard Mode)"))
@@ -858,16 +845,17 @@ def normaliseChanceValues(easyChance, medChance, hardChance):  # in case new cha
     return easyChance, medChance, hardChance
 
 
-# this is done so we can call it from outside when imported into another script instead of relying on dunder for execution of main
+#this is done so we can call it from outside when imported into another script instead of relying on dunder for execution of main
 def run():
     reloadFile("ledState")
     setupReturn = 1
-    while setupReturn == 1:  # ignore running in CI/CD
-        # note: (CD mainly, as CI will just import necessary methods and operate on them with input data and valid output checking)
+    while setupReturn == 1:#ignore running in CI/CD
+        #note: (CD mainly, as CI will just import necessary methods and operate on them with input data and valid output checking)
         setupReturn = setup()
 
 
-# main
+#main
 if __name__ == "__main__":
     run()
     print("GOODBYE")
+

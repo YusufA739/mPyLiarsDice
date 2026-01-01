@@ -5,7 +5,7 @@ global pixel#call the global version of pixel in use here
 pixel = Neopixel(1,0,23,"GRB")#Neopixel object 'pixel'
 pixel.brightness(127)#max brightness
 global runtimeLEDState
-runtimeLEDState= 0
+runtimeLEDState = 0
 
 
 #LD.txt is used to track state of LED
@@ -164,7 +164,6 @@ def game(allPlayerHands, dieInHands, players, currentAction, nextAction, cpuMode
 
                     totalDiceCount = sum(dieInHands)
                     if currentBet > lastBet and minCount <= totalDiceCount and minCount >= 1 and diceFace <= 6 and diceFace >= 1:
-                        lastBet = currentBet  # not needed, but is valid anyway
                         break
                     else:
                         if not currentBet > lastBet:
@@ -173,6 +172,8 @@ def game(allPlayerHands, dieInHands, players, currentAction, nextAction, cpuMode
                             print("Face chosen is not 1 to 6")
                         if minCount <= lastCount:
                             print("Minimum count is smaller than last count")
+                        if minCount > totalDiceCount:
+                            print("Minimum count is greater than total dice count. Nice one, mate.")
                         time.sleep(2)
                 except ValueError:
                     print("Invalid input. Integers only for face and count.")
@@ -338,7 +339,6 @@ def cpugame(allPlayerHands, dieInHands, players, currentAction, nextAction, cpuM
                         currentBet = int(str(diceFace) + str(minCount))
 
                         if currentBet > lastBet and minCount <= totalDiceCount and minCount >= 1 and diceFace <= 6 and diceFace >= 1:
-                            lastBet = currentBet  # not needed, but is valid anyway
                             break
                         else:
                             if not currentBet > lastBet:
@@ -347,6 +347,8 @@ def cpugame(allPlayerHands, dieInHands, players, currentAction, nextAction, cpuM
                                 print("Face chosen is not 1 to 6")
                             if minCount <= lastCount:
                                 print("Minimum count is smaller than last count")
+                            if minCount > totalDiceCount:
+                                print("Minimum count is greater than total dice count. Really proving that man is greater than machine here.")
                             time.sleep(2)
                     except ValueError:
                         print("Invalid input. Integers only for face and count.")

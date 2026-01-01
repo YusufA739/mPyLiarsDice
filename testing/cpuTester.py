@@ -4,7 +4,7 @@ if os.environ.get('GITHUB_ACTIONS'):
     import sys
     sys.path.append('..')
 
-from LiarsDice.LiarsDice.LiarsDice import cpuBet,dicegraphics
+from mPyLiarsDice.mPyLiarsDice.mPyLiarsDice import cpuBet,dicegraphics
 #package/repo name, folder name, filename/module/script name
 
 

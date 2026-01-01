@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+
+[tool.setuptools]
+packages = ["mPyLiarsDice"]
+
+[project]
+name = "mPyLiarsDice"
+version = "1.0.0" #increm this every new update (manual for now because auto would be super complex for current scope)
+description = "Simple Liar's Dice game. Inspired by RDR1 minigame"
+authors = [
+    {name = "YusufA442", email = "yusuf265820@gmail.com"}
+]
+dependencies = []
+license = {text = "Apache-2.0 license"}
+readme = "readme.txt"
+requires-python = ">=3.6"
+urls = {Homepage = "https://github.com/YusufA442/mPyLiarsDice"}
+
+[project.scripts]
+liarsdice = "mPyLiarsDice.mPyliarsDice:run"

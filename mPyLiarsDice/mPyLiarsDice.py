@@ -1,4 +1,9 @@
-import random, time
+import random,time,os
+
+if os.environ.get('GITHUB_ACTIONS'):
+    import sys
+    sys.path.append('..')
+
 from neopixel import Neopixel
 
 # import math #removed due to not being used at all in game (basic operations for maths needed so far)

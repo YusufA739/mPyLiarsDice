@@ -225,7 +225,7 @@ def game(allPlayerHands, dieInHands, players, currentAction, nextAction, cpuMode
                 actionTaken = True
 
                 actualcount = 0
-                validBet = False
+                validBet = True#should be reverse of if statement block's redef to keep both true/false paths open
                 for hand in allPlayerHands:
                     for dice in hand:
                         if dice == diceFace:
@@ -416,7 +416,7 @@ def cpugame(allPlayerHands, dieInHands, players, currentAction, nextAction, cpuM
                     actionTaken = True
 
                     actualcount = 0
-                    validBet = False
+                    validBet = True#should be reverse of if statement block's redef to keep both true/false paths open
                     for hand in allPlayerHands:
                         for dice in hand:
                             if dice == diceFace:
@@ -524,7 +524,7 @@ def cpugame(allPlayerHands, dieInHands, players, currentAction, nextAction, cpuM
                     actionTaken = True
 
                     actualcount = 0
-                    validBet = False
+                    validBet = True#should be reverse of if statement block's redef to keep both true/false paths open
                     for hand in allPlayerHands:
                         for dice in hand:
                             if dice == diceFace:

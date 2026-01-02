@@ -50,7 +50,7 @@ def updateLED(data=str(None)):
     if data == "1":#lose cond
         reloadLED(255,0,0)
     if data == "0":#quitter/in-progress
-        reloadLED(255,255,0)
+        reloadLED(255,50,0)
 
 
 def blinkLED(r,g,b):

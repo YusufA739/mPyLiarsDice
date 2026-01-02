@@ -467,13 +467,13 @@ def cpugame(allPlayerHands, dieInHands, players, currentAction, nextAction, cpuM
                 fakePlayerHands.append(diceFace)
 
                 for carrier in allPlayerHands[nextAction]:
-                    faceFrequency[carrier-1] = faceFrequency[carrier-1] + 1
+                    faceFrequency[carrier - 1] = faceFrequency[carrier - 1] + 1
 
-                if faceFrequency[diceFace] > minCount:
+                if faceFrequency[diceFace - 1] > minCount:
                     bluffCall = "b"
-                elif faceFrequency[diceFace] < minCount:
+                elif faceFrequency[diceFace - 1] < minCount:
                     bluffCall = "c"
-                else:
+                else:# ... == minCount
                     bluffCall = "s"
 
 

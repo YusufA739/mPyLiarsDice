@@ -20,7 +20,7 @@ packages = ["mPyLiarsDice"]
 
 [project]
 name = "mPyLiarsDice"
-version = "2.0.0" #increm this every new update (manual for now because auto would be super complex for current scope)
+version = "2.1.68" #increm this every new update (manual for now because auto would be super complex for current scope)
 description = "Simple Liar's Dice game. Inspired by RDR1 minigame. NOW FOR THE PI PICO SYSTEM. GO PHYSICAL SYSTEMS!!!!"
 authors = [
     {name = "YusufA442", email = "yusuf265820@gmail.com"}
